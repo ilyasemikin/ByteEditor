@@ -28,16 +28,16 @@ bytes_buffer_t *read_file_bytes(const char *filename) {
 	return buffer;
 }
 
-int write_file_bytes(const char *filename, const bytes_buffer_t *buffer) {
-	if (filename == NULL || buffer == NULL)
+int write_file_bytes(const char *filename, const bytes_buffer_t buffer) {
+	if (filename == NULL)
 		return -1;
 
 	FILE *file = fopen(filename, "wb");
 	if (file == NULL)
 		return -1;
 
-	size_t write_bytes = fwrite(buffer->buffer, sizeof(byte), buffer->size, file);
-	bool success = write_bytes == buffer->size;
+	size_t write_bytes = fwrite(buffer.buffer, sizeof(byte), buffer.size, file);
+	bool success = write_bytes == buffer.size;
 
 	fclose(file);
 	if (!success)

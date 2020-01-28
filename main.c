@@ -1,19 +1,18 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "file.h"
+#include "bytes_fun.h"
 
 int main(int argc, char **argv) {
-	struct bytes_buffer *buffer;
+	bytes_buffer_t *buffer;
 	buffer = read_file_bytes("text.txt");
 	if (!buffer) {
 		printf("Error read\n");
 		return -1;
 	}
 
-	printf("Bytes: %lu\n", buffer->size);
-	size_t i;
-	for (i = 0; i < buffer->size; i++)
-		printf("%d\n", buffer->buffer[i]);
+	printf("Read:\n");
+	bbuffer_print(*buffer);
 
-	write_file_bytes("text1.txt", buffer);
 	return 0;
 }

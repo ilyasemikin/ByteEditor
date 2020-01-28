@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "byte.h"
+#include "bytes_buffer.h"
 
 bytes_buffer_t *bytes_buffer_create(size_t size) {
 	bytes_buffer_t *buffer;
@@ -16,4 +16,3 @@ void bytes_buffer_delete(bytes_buffer_t *buffer) {
 		free(buffer->buffer);
 	free(buffer);
 }
-
