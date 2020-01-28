@@ -41,8 +41,13 @@ int main(int argc, char **argv) {
 		case M_REMOVE:
 			{	
 				size_t i;
-				for (i = 0; i < pr_desc.bytes_size; i++)
-					printf("%s\n", pr_desc.bytes[i]);
+				for (i = 0; i < pr_desc.bytes_size; i++) {
+					size_t len = strlen(pr_desc.bytes[i]);
+					bytes_buffer_t * buf = bbuffer_from_string(pr_desc.bytes[i], len);
+					if (buf == NULL)
+						error_exit(pr_desc.name, "can't parsing bytes", false);
+					bbuffer_print(*buf);
+				}
 			}
 			break;
 	}
@@ -147,5 +152,7 @@ program_description_t parse_argv(int argc, char **argv) {
 }
 
 void help(const char *pname) {
-	
+	printf("%s\n", pname);
+
+	exit(0);
 }

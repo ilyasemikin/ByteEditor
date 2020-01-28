@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <stdint.h>
+#include "hex_char.h"
 #include "bytes_fun.h"
 
 bool bbuffer_contain_bytes(bytes_buffer_t buffer, size_t offset, bytes_buffer_t bytes) {
@@ -39,7 +41,7 @@ bytes_buffer_t *bbuffer_remove_bytes(bytes_buffer_t buffer, bytes_buffer_t *byte
 	return ret;
 }
 
-void bbuffer_print(bytes_buffer_t buffer) {
+int bbuffer_print(bytes_buffer_t buffer) {
 	size_t offset;
 	for (offset = 0; offset < buffer.size; offset++) {
 		if (offset % 16 == 0)
@@ -54,4 +56,29 @@ void bbuffer_print(bytes_buffer_t buffer) {
 	if (offset % 16 != 0)
 		printf("\n");
 	printf("%08lX\n", offset);
+
+	return offset - 1;
+}
+
+bytes_buffer_t *bbuffer_from_string(const char *str, size_t len) {
+	bytes_buffer_t *res = bytes_buffer_create(len / 2 + len % 2);
+	uint8_t h_byte, l_byte;
+	size_t res_i = 0;
+	size_t i;
+	for (i = 0; i < len; i += 2) {
+		if (is_hex_char(str[i])) {
+			if (len - i > 1) {
+				h_byte = get_hex_value(str[i]);
+				l_byte = get_hex_value(str[i + 1]);
+			}
+			else {
+				h_byte = 0;
+				l_byte = get_hex_value(str[i]);
+			}
+			res->buffer[res_i++] = (h_byte << 4) + l_byte;
+		}
+		else
+			return NULL;
+	}
+	return res;
 }
