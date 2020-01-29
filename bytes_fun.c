@@ -69,13 +69,13 @@ list_t *bbuffer_search_bytes(bytes_buffer_t buffer, bytes_buffer_t **bytes, size
 int bbuffer_print(bytes_buffer_t buffer) {
 	size_t offset;
 	for (offset = 0; offset < buffer.size; offset++) {
+		if (offset != 0 && offset % 16 == 0)
+			printf("\n");
 		if (offset % 16 == 0)
 			printf("%08lX ", offset);
 		
 		printf("%02X ", buffer.buffer[offset]);
 
-		if (offset != 0 && offset % 15 == 0)
-			printf("\n");
 	}
 
 	if (offset % 16 != 0)
