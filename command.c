@@ -17,8 +17,12 @@ void perform_command(command_desc_t *cmds, size_t cmds_size, int argc, char **ar
 
 	if (argc < 2)
 		error_exit_help(p_name, "missing command");
-	
+
 	const char *cmd = argv[1];
+
+	if (strcmp(cmd, "help") == 0)
+		help(p_name, cmds, cmds_size);
+
 	long long cmd_index = command_find(cmd, cmds, cmds_size);
 	if (cmd_index == -1) {
 		char error_msg[100];

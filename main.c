@@ -5,20 +5,20 @@ int main(int argc, char **argv) {
 	command_desc_t commands[] = {
 		{
 			.name = "print",
-			.desc = "",
-			.usage = "",
+			.desc = "print file content in hex",
+			.usage = "[INPUT]",
 			.func = print
 		},
 		{
 			.name = "remeach",
-			.desc = "",
-			.usage = "",
+			.desc = "remove every byte occurrence in file",
+			.usage = "[INPUT] [OUTPUT] [BYTES...]",
 			.func = remove_each_occur
 		},
 		{
 			.name = "search",
-			.desc = "",
-			.usage = "",
+			.desc = "search bytes in file",
+			.usage = "[INPUT] [BYTES...]",
 			.func = search
 		}
 	};

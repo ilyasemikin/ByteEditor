@@ -150,45 +150,6 @@ static int bbuffer_compare(const void *a, const void *b) {
 	return s_arg - f_arg;
 }
 
-// Вывод параметра на экран в виде таблицы
-static void print_parametr_description(const char *p_name, const char *p_desc) {
-	const size_t length = 100;
-	const size_t p_name_offset = 1;
-	const size_t p_desc_offset = 30;
-
-	size_t p_name_len = strlen(p_name);
-	size_t p_desc_len = strlen(p_desc);
-
-	size_t p_name_part_len = p_desc_offset - p_name_offset - p_name_len;
-	size_t p_desc_part_len = length - p_desc_offset;
-	
-	// Вывод параметра
-	size_t i;
-	for (i = 0; i < p_name_offset; i++)
-		putchar(' ');
-
-	printf("%s", p_name);
-
-	for (i = 0; i < p_name_part_len; i++)
-		putchar(' ');
-
-	size_t p_desc_i = 0;
-	size_t count_lines = p_desc_len / p_desc_part_len + (p_desc_len % p_desc_part_len ? 1 : 0);
-	size_t line;
-	// Вывод описания параметра
-	for (line = 0; line < count_lines; line++) {
-		size_t count_chars = (line == count_lines - 1) ? p_desc_len - p_desc_i : p_desc_part_len;
-		for (i = 0; i < count_chars; i++)
-			putchar(p_desc[p_desc_i++]);
-		putchar('\n');
-		if (line != count_lines - 1)
-			for (i = 0; i < p_desc_offset; i++)
-				putchar(' ');
-	}
-	if (count_lines == 0)
-		putchar('\n');
-}
-
 void error_exit(const char *p_name, const char *msg) {
 	printf("%s: %s\n", p_name, msg);
 	exit(1);
@@ -196,23 +157,72 @@ void error_exit(const char *p_name, const char *msg) {
 
 void error_exit_help(const char *p_name, const char *msg) {
 	printf("%s: %s\n", p_name, msg);
-	printf("Try \'%s help\' for more info\n", p_name);
+	printf("Try \'%s help\' for more information\n", p_name);
 	exit(1);
 }
 
-void help(const char *pname) {
-	printf("%s [MODE] [OPTION] ... [-i] path\n\n", pname);
+static const size_t out_length = 100;
+static const size_t out_name_offset = 3;
+// Смещение описания/использования от левого края терминала
+static const size_t out_info_offset = 30;
+static void print_command_info(const char *name, const char *info);
 
-	printf("modes:\n");
-	print_parametr_description("-p", "print file contens in hex");
-	print_parametr_description("-r", "remove bytes");
-	print_parametr_description("-s", "search bytes in file");
+void help(const char *p_name, command_desc_t *cmds, size_t cmds_size) {
+	printf("%s [COMMAND] [OPTIONS] ... \n", p_name);
 
-	printf("\n");
+	putchar('\n');
+	printf("Commands:\n");
 
-	print_parametr_description("-i [path]", "input file path");
-	print_parametr_description("-o [path]", "output file path");
-	print_parametr_description("-b [bytes]", "bytes");
+	size_t i;
+	for (i = 0; i < cmds_size; i++)
+		print_command_info(cmds[i].name, cmds[i].desc);
+	print_command_info("help", "print this help and exit");
 
+	putchar('\n');
+	printf("Commands usage:\n");
+	for (i = 0; i < cmds_size; i++)
+		print_command_info(cmds[i].name, cmds[i].usage);
+	
 	exit(0);
+}
+
+static void print_command_info(const char *name, const char *info) {
+	size_t name_len = strlen(name);
+	size_t info_len = strlen(info);
+	
+	size_t i;
+	for (i = 0; i < out_name_offset; i++)
+		putchar(' ');
+	
+	// Вывод названия команды
+	size_t out_name_len; 
+	out_name_len = name_len < out_info_offset ? name_len : out_info_offset - out_name_offset;
+	for (i = 0; i < out_name_len; i++)
+		putchar(name[i]);
+
+	// Вывод промежутка между названием команды и информацией о команде
+	size_t count_char_info = out_info_offset - out_name_len - out_name_offset;
+	for (i = 0; i < count_char_info; i++)
+		putchar(' ');
+
+	// Вывод информации о команде
+	size_t out_info_part_size = out_length - out_info_offset;
+	size_t count_lines;
+	count_lines = info_len / out_info_part_size + (info_len % out_info_part_size ? 1 : 0);
+	if (count_lines == 0)
+		putchar('\n');
+	size_t line;
+	for (line = 0; line < count_lines; line++) {
+		size_t out_count_chars;
+		out_count_chars = line == count_lines - 1 ? (info_len - out_info_part_size * (count_lines - 1)) : out_info_part_size;
+		for (i = 0; i < out_count_chars; i++)
+			putchar(info[line * out_info_part_size + i]);
+		
+		putchar('\n');
+
+		// Вывод отступа при переносе информации на новую строку
+		if (line != count_lines - 1)
+			for (i = 0; i < out_info_offset; i++)
+				putchar(' ');
+	}
 }

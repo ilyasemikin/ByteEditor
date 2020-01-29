@@ -18,4 +18,4 @@ void search(const char *p_name, int argc, char **argv);
 
 void error_exit(const char *p_name, const char *msg);
 void error_exit_help(const char *p_name, const char *msg);
-void help(const char *pname);
+void help(const char *p_name, command_desc_t *cmds, size_t cmds_size);
