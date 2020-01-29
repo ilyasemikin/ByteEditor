@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
 		case M_PRINT:
 			bbuffer_print(*pr_desc.input_buffer);
 			break;
-		case M_REMOVE:
+		case M_REMOVE_EACH_OCCUR:
 			{
 				bytes_buffer_t *res;
 				res = bbuffer_remove_bytes(*pr_desc.input_buffer, pr_desc.bytes, pr_desc.bytes_size);
@@ -63,17 +63,7 @@ int main(int argc, char **argv) {
 			break;
 	}
 
-	if (pr_desc.input_buffer != NULL) 
-		bytes_buffer_delete(pr_desc.input_buffer);
-	if (pr_desc.bytes != NULL) {
-		size_t i;
-		for (i = 0; i < pr_desc.bytes_size; i++)
-			if (pr_desc.bytes[i] != NULL)
-				free(pr_desc.bytes[i]);
-		free(pr_desc.bytes);
-		pr_desc.bytes = NULL;
-		pr_desc.bytes_size = 0;
-	}
+	program_description_clean(&pr_desc);
 
 	return 0;
 }

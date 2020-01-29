@@ -6,6 +6,13 @@
 #include "bytes_fun.h"
 #include "file.h"
 
+void program_description_init(program_description_t *pr_desc) {
+	pr_desc->input_buffer = NULL;
+	pr_desc->output_file = NULL;
+	pr_desc->bytes = NULL;
+	pr_desc->bytes_size = 0;
+}
+
 void program_description_clean(program_description_t *pr_desc) {
 	if (pr_desc->input_buffer != NULL)
 		bytes_buffer_delete(pr_desc->input_buffer);
@@ -33,11 +40,8 @@ static int bbuffer_compare(const void *a, const void *b);
 
 program_description_t parse_argv(int argc, char **argv) {
 	program_description_t pr_desc;
-	pr_desc.name = &(*argv)[0];
-	pr_desc.input_buffer = NULL;
-	pr_desc.output_file = NULL;
-	pr_desc.bytes = NULL;
-	pr_desc.bytes_size = 0;
+	program_description_init(&pr_desc);
+	pr_desc.name = *argv;
 
 	bool mode_selected = false;
 	bool input_selected = false;
@@ -61,7 +65,7 @@ program_description_t parse_argv(int argc, char **argv) {
 				case 'r':
 					if (mode_selected)
 						error_exit(&pr_desc, "mode selected again", true);
-					pr_desc.mode = M_REMOVE;
+					pr_desc.mode = M_REMOVE_EACH_OCCUR;
 					mode_selected = true;;
 					break;
 				case 's':
@@ -147,7 +151,7 @@ program_description_t parse_argv(int argc, char **argv) {
 		error_exit(&pr_desc, "missing input file", true);
 	if (pr_desc.mode == M_PRINT && (output_selected || bytes_selected))
 		error_exit(&pr_desc, "invalid parametrs for -p", true);
-	if (pr_desc.mode == M_REMOVE && (!output_selected || !bytes_selected))
+	if (pr_desc.mode == M_REMOVE_EACH_OCCUR && (!output_selected || !bytes_selected))
 		error_exit(&pr_desc, "invalid parametrs for -r", true);
 	if (pr_desc.mode == M_SEARCH && (output_selected || !bytes_selected))
 		error_exit(&pr_desc, "invalid parametrs for -s", true);

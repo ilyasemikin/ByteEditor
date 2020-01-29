@@ -5,7 +5,7 @@
 #include "hex_char.h"
 #include "bytes_fun.h"
 
-bool bbuffer_contain_bytes(bytes_buffer_t buffer, size_t offset, bytes_buffer_t bytes) {
+static bool bbuffer_contain_bytes(const bytes_buffer_t buffer, size_t offset, bytes_buffer_t bytes) {
 	if (offset + bytes.size > buffer.size)
 		return false;
 	size_t i;
@@ -15,7 +15,15 @@ bool bbuffer_contain_bytes(bytes_buffer_t buffer, size_t offset, bytes_buffer_t 
 	return true;
 }
 
-bytes_buffer_t *bbuffer_remove_bytes(bytes_buffer_t buffer, bytes_buffer_t **bytes, size_t bytes_size) {
+static long long bbuffer_contain_one_of_bytes(const bytes_buffer_t buffer, size_t offset, bytes_buffer_t **bytes, size_t bytes_size) {
+	size_t j;
+	for (j = 0; j < bytes_size; j++)
+		if (bbuffer_contain_bytes(buffer, offset, *bytes[j]))
+			return j;
+	return -1;
+}
+
+bytes_buffer_t *bbuffer_remove_bytes(const bytes_buffer_t buffer, bytes_buffer_t **bytes, size_t bytes_size) {
 	bytes_buffer_t *ret;
 	ret = bytes_buffer_create(buffer.size);
 	if (ret == NULL)
@@ -24,15 +32,13 @@ bytes_buffer_t *bbuffer_remove_bytes(bytes_buffer_t buffer, bytes_buffer_t **byt
 	size_t ret_i = 0;
 	size_t i;
 	for (i = 0; i < buffer.size; i++) {
-		size_t j;
-		for (j = 0; j < bytes_size; j++) {
-			if (bbuffer_contain_bytes(buffer, i, *bytes[j])) {
-				i += bytes[j]->size - 1;
-				ret->size -= bytes[j]->size;
-			}
-			else
-				ret->buffer[ret_i++] = buffer.buffer[i];
+		long long finded = bbuffer_contain_one_of_bytes(buffer, i, bytes, bytes_size);
+		if (finded != -1) {
+			ret->size -= bytes[finded]->size;
+			i -= bytes[finded]->size - 1;
 		}
+		else
+			ret->buffer[ret_i++] = buffer.buffer[i];
 	}
 
 	ret->buffer = (byte *)realloc(ret->buffer, sizeof(byte) * ret->size);
@@ -78,9 +84,7 @@ int bbuffer_print(bytes_buffer_t buffer) {
 
 	}
 
-	if (offset % 16 != 0)
-		printf("\n");
-	printf("%08lX\n", offset);
+	printf("\n%08lX\n", offset);
 
 	return offset - 1;
 }
