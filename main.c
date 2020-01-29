@@ -6,6 +6,7 @@
 #include "bytes_buffer.h"
 #include "bytes_fun.h"
 #include "program_fun.h"
+#include "list.h"
 
 int bbuffers_comp(const void *a, const void *b) {
 	int f_arg = ((*(bytes_buffer_t **)a))->size;
@@ -19,10 +20,8 @@ int main(int argc, char **argv) {
 
 	switch (pr_desc.mode) {
 		case M_PRINT:
-			{
-				bbuffer_print(*pr_desc.input_buffer);
-				break;
-			}
+			bbuffer_print(*pr_desc.input_buffer);
+			break;
 		case M_REMOVE:
 			{
 				bytes_buffer_t *res;
@@ -32,6 +31,34 @@ int main(int argc, char **argv) {
 				write_file_bytes(pr_desc.output_file, *res);
 				printf("Byte deleted: %llu\n", pr_desc.input_buffer->size - res->size);
 				bytes_buffer_delete(res);
+			}
+			break;
+		case M_SEARCH:
+			{
+				list_t *finded = bbuffer_search_bytes(*pr_desc.input_buffer, pr_desc.bytes, pr_desc.bytes_size);
+				if (finded == NULL)
+					error_exit(&pr_desc, "can't search bytes", false);
+
+
+				if (list_count(*finded)) {
+					printf("Bytes finded at position:\n");
+					node_t *node;
+					node = finded->head;
+					size_t cur = 0;
+					while (node != NULL) {
+						printf("%08llX ", *((size_t *)node->data));
+						if (cur != 0 && cur % 16 == 0)
+							printf("\n");
+						cur++;
+						node = node->next;
+					}
+					if (cur % 17 != 0)
+						printf("\n");
+				}
+				else
+					printf("Bytes dont's finded\n");
+
+				list_delete_with_data(finded);
 			}
 			break;
 	}

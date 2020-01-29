@@ -23,4 +23,5 @@ list_t *list_create();
 int list_add_begin(list_t *list, void *data);
 int list_add_end(list_t *list, void *data);
 void list_delete(list_t *list);
+void list_delete_with_data(list_t *list);
 size_t list_count(list_t list);

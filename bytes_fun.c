@@ -41,6 +41,31 @@ bytes_buffer_t *bbuffer_remove_bytes(bytes_buffer_t buffer, bytes_buffer_t **byt
 	return ret;
 }
 
+list_t *bbuffer_search_bytes(bytes_buffer_t buffer, bytes_buffer_t **bytes, size_t bytes_size) {
+	list_t *ret;
+	ret = list_create();
+	if (ret == NULL)
+		return NULL;
+
+	size_t i;
+	for (i = 0; i < buffer.size; i++) {
+		size_t j;
+		for (j = 0; j < bytes_size; j++)
+			if (bbuffer_contain_bytes(buffer, i, *bytes[j])) {
+				size_t *value;
+				value = (size_t *)malloc(sizeof(size_t));
+				if (value == NULL) {
+					list_delete_with_data(ret);
+					return NULL;
+				}
+				*value = i;
+				list_add_end(ret, value);
+			}
+	}
+
+	return ret;
+}
+
 int bbuffer_print(bytes_buffer_t buffer) {
 	size_t offset;
 	for (offset = 0; offset < buffer.size; offset++) {

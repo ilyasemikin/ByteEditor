@@ -5,7 +5,7 @@
 #include "bytes_buffer.h"
 
 enum PROGRAM_MODE {
-	M_PRINT, M_REMOVE
+	M_PRINT, M_REMOVE, M_SEARCH
 };
 
 struct program_description {
@@ -19,7 +19,9 @@ struct program_description {
 
 typedef struct program_description program_description_t;
 
+void program_description_clean(program_description_t *pr_desc);
+
 void error_exit(program_description_t *pr_desc, const char *msg, bool help_msg);
 program_description_t parse_argv(int argc, char **argv);
 
-void help(const char *pname);
+void help(program_description_t *pr_desc);

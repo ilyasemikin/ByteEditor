@@ -68,6 +68,19 @@ void list_delete(list_t *list) {
 	free(list);
 }
 
+void list_delete_with_data(list_t *list) {
+	node_t *p;
+	p = list->head;
+	while (p != NULL) {
+		node_t *next = p->next;
+		if (p->data != NULL)
+			free(p->data);
+		free(p);
+		p = next;
+	}
+	free(list);
+}
+
 size_t list_count(list_t list) {
 	size_t count = 0;
 	node_t *p;
