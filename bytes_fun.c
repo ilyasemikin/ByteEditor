@@ -15,7 +15,7 @@ bool bbuffer_contain_bytes(bytes_buffer_t buffer, size_t offset, bytes_buffer_t 
 	return true;
 }
 
-bytes_buffer_t *bbuffer_remove_bytes(bytes_buffer_t buffer, bytes_buffer_t *bytes, size_t bytes_size) {
+bytes_buffer_t *bbuffer_remove_bytes(bytes_buffer_t buffer, bytes_buffer_t **bytes, size_t bytes_size) {
 	bytes_buffer_t *ret;
 	ret = bytes_buffer_create(buffer.size);
 	if (ret == NULL)
@@ -26,9 +26,9 @@ bytes_buffer_t *bbuffer_remove_bytes(bytes_buffer_t buffer, bytes_buffer_t *byte
 	for (i = 0; i < buffer.size; i++) {
 		size_t j;
 		for (j = 0; j < bytes_size; j++) {
-			if (bbuffer_contain_bytes(buffer, i, bytes[j])) {
-				i += bytes[j].size - 1;
-				ret->size -= bytes[j].size;
+			if (bbuffer_contain_bytes(buffer, i, *bytes[j])) {
+				i += bytes[j]->size - 1;
+				ret->size -= bytes[j]->size;
 			}
 			else
 				ret->buffer[ret_i++] = buffer.buffer[i];
@@ -61,24 +61,26 @@ int bbuffer_print(bytes_buffer_t buffer) {
 }
 
 bytes_buffer_t *bbuffer_from_string(const char *str, size_t len) {
+	size_t i;
+	for (i = 0; i < len; i++)
+		if (!is_hex_char(str[i]))
+			return NULL;
+
 	bytes_buffer_t *res = bytes_buffer_create(len / 2 + len % 2);
+	if (res == NULL)
+		return NULL;
 	uint8_t h_byte, l_byte;
 	size_t res_i = 0;
-	size_t i;
 	for (i = 0; i < len; i += 2) {
-		if (is_hex_char(str[i])) {
-			if (len - i > 1) {
-				h_byte = get_hex_value(str[i]);
-				l_byte = get_hex_value(str[i + 1]);
-			}
-			else {
-				h_byte = 0;
-				l_byte = get_hex_value(str[i]);
-			}
-			res->buffer[res_i++] = (h_byte << 4) + l_byte;
+		if (len - i > 1) {
+			h_byte = get_hex_value(str[i]);
+			l_byte = get_hex_value(str[i + 1]);
 		}
-		else
-			return NULL;
+		else {
+			h_byte = 0;
+			l_byte = get_hex_value(str[i]);
+		}
+		res->buffer[res_i++] = (h_byte << 4) + l_byte;
 	}
 	return res;
 }
