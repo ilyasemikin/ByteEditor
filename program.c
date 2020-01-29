@@ -87,6 +87,7 @@ void search(const char *p_name, int argc, char **argv) {
 			if (index != 0 && index % 16 == 0)
 				putchar('\n');
 			printf("%08llX ", *((size_t *)p->data));
+			++index;
 			p = p->next;
 		}
 		putchar('\n');
