@@ -1,11 +1,14 @@
 #pragma once
 
 #include <stddef.h>
+#include <stdbool.h>
 
 struct command_desc {
 	const char *name;
 	const char *desc;
 	const char *usage;
+	int count_params;
+	bool more_params_allow;
 	void (*func)(const char *pname, int argc, char **argv);
 };
 

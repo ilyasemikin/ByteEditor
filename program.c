@@ -13,8 +13,6 @@ static int bytes_get_from_string(char **strs, size_t strs_size, bytes_buffer_t *
 static int bbuffer_compare(const void *a, const void *b);
 
 void print(const char *p_name, int argc, char **argv) {
-	if (argc != 1)
-		error_exit_help(p_name, "incorrect use command print");
 	const char *input_file = *argv;
 	bytes_buffer_t *buf = err_read_bytes(p_name, input_file);
 	bbuffer_print(*buf);
@@ -22,8 +20,6 @@ void print(const char *p_name, int argc, char **argv) {
 }
 
 void remove_each_occur(const char *p_name, int argc, char **argv) {
-	if (argc < 3)
-		error_exit_help(p_name, "incorrect use command remeach");
 	const char *input_file = argv[0];
 	const char *output_file = argv[1];
 	argv += 2;
@@ -55,9 +51,6 @@ void remove_each_occur(const char *p_name, int argc, char **argv) {
 }
 
 void search(const char *p_name, int argc, char **argv) {
-	if (argc < 2)
-		error_exit_help(p_name, "incorrect use command search");
-
 	const char *input_file = argv[0];
 	argv++;
 

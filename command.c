@@ -18,16 +18,28 @@ void perform_command(command_desc_t *cmds, size_t cmds_size, int argc, char **ar
 	if (argc < 2)
 		error_exit_help(p_name, "missing command");
 
-	const char *cmd = argv[1];
+	const char *input_cmd = argv[1];
 
-	if (strcmp(cmd, "help") == 0)
+	if (strcmp(input_cmd, "help") == 0)
 		help(p_name, cmds, cmds_size);
 
-	long long cmd_index = command_find(cmd, cmds, cmds_size);
+	long long cmd_index = command_find(input_cmd, cmds, cmds_size);
 	if (cmd_index == -1) {
 		char error_msg[100];
-		snprintf(error_msg, sizeof(error_msg), "unknown command \'%s\'", cmd);
+		snprintf(error_msg, sizeof(error_msg), "unknown command \'%s\'", input_cmd);
 		error_exit_help(p_name, error_msg);
 	}
-	cmds[cmd_index].func(p_name, argc - 2, argv + 2);
+
+	command_desc_t cmd = cmds[cmd_index];
+
+	argc -= 2;
+	argv += 2;
+
+	if ((!cmd.more_params_allow && cmd.count_params != argc) 
+	    || (cmd.more_params_allow && cmd.count_params > argc)) {
+		char error_msg[100];
+		snprintf(error_msg, sizeof(error_msg), "incorrect usage command \'%s\'", cmd.name);
+		error_exit_help(p_name, error_msg);
+	}
+	cmd.func(p_name, argc, argv);
 }
