@@ -13,6 +13,15 @@ int main(int argc, char **argv) {
 		},
 
 		{
+			.name = "remove",
+			.desc = "remove bytes in file",
+			.usage = "[INPUT] [OUTPUT] [POSITION] [COUNT]",
+			.count_params = 4,
+			.more_params_allow = false,
+			.func = remove_byte
+		},
+
+		{
 			.name = "remeach",
 			.desc = "remove every byte occurrence in file",
 			.usage = "[INPUT] [OUTPUT] [BYTES...]",

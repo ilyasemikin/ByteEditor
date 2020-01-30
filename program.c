@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include "program.h"
+#include "bytes_buffer.h"
 #include "bytes_fun.h"
+#include "hex_char.h"
 #include "file.h"
 
 // Вспомогательные функции
@@ -17,6 +19,43 @@ void print(const char *p_name, int argc, char **argv) {
 	bytes_buffer_t *buf = err_read_bytes(p_name, input_file);
 	bbuffer_print(*buf);
 	bytes_buffer_delete(buf);
+}
+
+void remove_byte(const char *p_name, int argc, char **argv) {
+	const char *input_file = argv[0];
+	const char *output_file = argv[1];
+	const char *offset_str = argv[2];
+	const char *count_str = argv[3];
+
+	if (!is_hex_str(offset_str))
+		error_exit(p_name, "position bytes incorrect");
+	if (!is_hex_str(count_str))
+		error_exit(p_name, "count bytes incorrect");
+
+	unsigned long long offset, count;
+	sscanf(offset_str, "%llx", &offset);
+	sscanf(count_str, "%llx", &count);
+
+	bytes_buffer_t *buf = err_read_bytes(p_name, input_file);
+
+	if (offset > buf->size || offset + count > buf->size)
+		error_exit(p_name, "error");
+
+	size_t cp_block_size = buf->size - (offset + count);
+	const void *src = &buf->buffer[offset + count];
+	void *dst = &buf->buffer[offset];
+	memcpy(dst, src, sizeof(byte_t) * cp_block_size);
+	
+	buf->size -= count;
+	buf->buffer = (byte_t *)realloc(buf->buffer, sizeof(byte_t) * buf->size);
+	if (buf->buffer == NULL) {
+		free(buf);
+		error_exit(p_name, "error realloc buffer");
+	}
+
+	err_write_bytes(p_name, output_file, buf);
+
+	free(buf);
 }
 
 void remove_each_occur(const char *p_name, int argc, char **argv) {

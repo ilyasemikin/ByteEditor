@@ -16,7 +16,7 @@ bytes_buffer_t *read_file_bytes(const char *filename) {
 	bytes_buffer_t *buffer;
 	buffer = bytes_buffer_create(buf_size);
 
-	size_t read_bytes = fread(buffer->buffer, sizeof(byte), buffer->size, file);
+	size_t read_bytes = fread(buffer->buffer, sizeof(byte_t), buffer->size, file);
 	bool success = read_bytes == buffer->size;
 
 	fclose(file);
@@ -36,7 +36,7 @@ int write_file_bytes(const char *filename, const bytes_buffer_t buffer) {
 	if (file == NULL)
 		return -1;
 
-	size_t write_bytes = fwrite(buffer.buffer, sizeof(byte), buffer.size, file);
+	size_t write_bytes = fwrite(buffer.buffer, sizeof(byte_t), buffer.size, file);
 	bool success = write_bytes == buffer.size;
 
 	fclose(file);

@@ -3,10 +3,10 @@
 #include <stdint.h>
 #include <stddef.h>
 
-typedef uint8_t byte;
+typedef uint8_t byte_t;
 
 struct bytes_buffer {
-	byte *buffer;
+	byte_t *buffer;
 	size_t size;
 };
 

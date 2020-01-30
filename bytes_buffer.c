@@ -5,7 +5,7 @@ bytes_buffer_t *bytes_buffer_create(size_t size) {
 	bytes_buffer_t *buffer;
 	buffer = (bytes_buffer_t *)malloc(sizeof(bytes_buffer_t));
 	buffer->size = size;
-	buffer->buffer = (byte *)malloc(sizeof(byte) * size);
+	buffer->buffer = (byte_t *)malloc(sizeof(byte_t) * size);
 	return buffer;
 }
 

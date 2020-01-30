@@ -13,6 +13,7 @@ typedef struct program_description program_description_t;
 
 // Modes functions
 void print(const char *p_name, int argc, char **argv);
+void remove_byte(const char *p_name, int argc, char **argv);
 void remove_each_occur(const char *p_name, int argc, char **argv);
 void search(const char *p_name, int argc, char **argv);
 

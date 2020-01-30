@@ -41,7 +41,7 @@ bytes_buffer_t *bbuffer_remove_bytes(const bytes_buffer_t buffer, bytes_buffer_t
 			ret->buffer[ret_i++] = buffer.buffer[i];
 	}
 
-	ret->buffer = (byte *)realloc(ret->buffer, sizeof(byte) * ret->size);
+	ret->buffer = (byte_t *)realloc(ret->buffer, sizeof(byte_t) * ret->size);
 	if (ret->buffer == NULL)
 		return NULL;
 	return ret;
