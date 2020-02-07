@@ -72,8 +72,10 @@ list_t *bbuffer_search_bytes(bytes_buffer_t buffer, bytes_buffer_t **bytes, size
 	return ret;
 }
 
-int bbuffer_print(bytes_buffer_t buffer) {
+size_t bbuffer_print(bytes_buffer_t buffer) {
 	size_t offset;
+	size_t count_print;
+	count_print = 0;
 	for (offset = 0; offset < buffer.size; offset++) {
 		if (offset != 0 && offset % 16 == 0)
 			printf("\n");
@@ -81,12 +83,12 @@ int bbuffer_print(bytes_buffer_t buffer) {
 			printf("%08lX ", offset);
 		
 		printf("%02X ", buffer.buffer[offset]);
-
+		count_print++;
 	}
 
 	printf("\n%08lX\n", offset);
-
-	return offset - 1;
+	
+	return count_print;
 }
 
 bytes_buffer_t *bbuffer_from_string(const char *str, size_t len) {

@@ -12,5 +12,12 @@ struct bytes_buffer {
 
 typedef struct bytes_buffer bytes_buffer_t;
 
+// bytes_buffer_create
+// Создает и инициализирует буффер байт размером length
+// В случае провала возвращает NULL
 bytes_buffer_t *bytes_buffer_create(size_t length);
+
+// bytes_buffer_delete
+// Освобождает буффер байт
+// В случае передачи NULL не делает ничего
 void bytes_buffer_delete(bytes_buffer_t *buffer);

@@ -7,7 +7,7 @@
 #include "hex_char.h"
 #include "file.h"
 
-// Вспомогательные функции
+// Вспомогательные функции, объявление
 static bytes_buffer_t *err_read_bytes(const char *p_name, const char *input_file);
 static void err_write_bytes(const char *p_name, const char *output_file, bytes_buffer_t *buf);
 static void bytes_delete(bytes_buffer_t **bytes, size_t bytes_size);
@@ -128,6 +128,7 @@ void search(const char *p_name, int argc, char **argv) {
 	list_delete_with_data(finded);
 }
 
+// Вспомагательные функции, определение
 static bytes_buffer_t *err_read_bytes(const char *p_name, const char *input_file) {
 	bytes_buffer_t *ret = read_file_bytes(input_file);
 	if (ret == NULL) {
