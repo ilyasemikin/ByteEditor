@@ -98,17 +98,13 @@ bytes_buffer_t *bbuffer_from_string(const char *str, size_t len) {
 	bytes_buffer_t *res = bytes_buffer_create(len / 2 + len % 2);
 	if (res == NULL)
 		return NULL;
-	uint8_t h_byte, l_byte;
 	size_t res_i = 0;
-	for (i = 0; i < len; i += 2) {
-		if (len - i > 1) {
-			h_byte = get_hex_value(str[i]);
-			l_byte = get_hex_value(str[i + 1]);
-		}
-		else {
-			h_byte = 0;
-			l_byte = get_hex_value(str[i]);
-		}
+	if (len % 2) 
+		res->buffer[res_i++] = get_hex_value(str[0]);
+	for (i = len % 2; i < len; i += 2) {
+		uint8_t h_byte, l_byte;
+		h_byte = get_hex_value(str[i]);
+		l_byte = get_hex_value(str[i + 1]);
 		res->buffer[res_i++] = (h_byte << 4) + l_byte;
 	}
 	return res;
