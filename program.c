@@ -8,11 +8,32 @@
 #include "file.h"
 
 // Вспомогательные функции, объявление
+
+// err_read_bytes
+// Попытка прочить байты файла
+// В случае провала завершает работу программы с выводом сообщения на экран
 static bytes_buffer_t *err_read_bytes(const char *p_name, const char *input_file);
+
+// err_write_bytes
+// Попытка создать файл на основе буфера байт
+// В случае провла завершает работу программы с выводом сообщения на экран
 static void err_write_bytes(const char *p_name, const char *output_file, bytes_buffer_t *buf);
+
+// bytes_delete
+// Освобождения ресурсов, занимаемых массивом bytes 
 static void bytes_delete(bytes_buffer_t **bytes, size_t bytes_size);
+
+// bytes_get_from_string
+// Создания массива байт на основе строк strs
+// Сохраняет результат в переменные res и res_size
+// Возвращает 0 в случае успеха
 static int bytes_get_from_string(char **strs, size_t strs_size, bytes_buffer_t ***res, size_t *res_size);
+
+// bbuffer_compare
+// Фукнция для qsort, для сортировки в порядке убывания
 static int bbuffer_compare(const void *a, const void *b);
+
+// Конец блока объевления вспомагательных функций
 
 void print(const char *p_name, int argc, char **argv) {
 	const char *input_file = *argv;
@@ -55,7 +76,7 @@ void remove_byte(const char *p_name, int argc, char **argv) {
 
 	err_write_bytes(p_name, output_file, buf);
 
-	free(buf);
+	bytes_buffer_delete(buf);
 }
 
 void remove_each_occur(const char *p_name, int argc, char **argv) {
@@ -79,7 +100,7 @@ void remove_each_occur(const char *p_name, int argc, char **argv) {
 		error_exit(p_name, "error remove bytes");
 
 	size_t bytes_remove = in_buf->size - out_buf->size;
-	free(in_buf);
+	bytes_buffer_delete(in_buf);
 
 	err_write_bytes(p_name, output_file, out_buf);
 
